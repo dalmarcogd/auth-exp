@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "775118130907",
+    "project_id": "my-training-notes",
+    "storage_bucket": "my-training-notes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775118130907:android:0b89931c1f32c411d5c6fe",
+        "android_client_info": {
+          "package_name": "com.my_training_notes.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "sender",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEri3mmL2hsDXHyXNJcjODM3QfZOICzBM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775118130907-ee497e9oblls3sibubj4jvni8qskaefl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
