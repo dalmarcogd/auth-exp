@@ -1,10 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_training_notes/authentication.dart';
+
 import 'package:my_training_notes/screens/user_info_screen.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  const GoogleSignInButton({Key? key}) : super(key: key);
+  final VoidCallback onPressed;
+
+  const GoogleSignInButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -35,22 +39,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   _isSigningIn = true;
                 });
 
-                User? user =
-                    await Authentication.signInWithGoogle(context: context);
+                widget.onPressed();
 
                 setState(() {
                   _isSigningIn = false;
                 });
-
-                if (user != null) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => UserInfoScreen(
-                        user: user,
-                      ),
-                    ),
-                  );
-                }
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -59,7 +52,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const <Widget>[
                     Image(
-                      image: AssetImage("assets/google_logo.png"),
+                      image: AssetImage("assets/images/google_logo.png"),
                       height: 35.0,
                     ),
                     Padding(

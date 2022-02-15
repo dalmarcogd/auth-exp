@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:my_training_notes/authentication.dart';
-import 'package:my_training_notes/custom_colors.dart';
+import 'package:my_training_notes/injection.dart';
+import 'package:my_training_notes/models/user.dart';
+import 'package:my_training_notes/screens/home_screen.dart';
+import 'package:my_training_notes/services/authentication/iauthentication.dart';
+import 'package:my_training_notes/constants/custom_colors.dart';
 import 'package:my_training_notes/widgets/google_sign_in_button.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -34,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     Flexible(
                       flex: 1,
                       child: Image.asset(
-                        'assets/firebase_logo.png',
+                        'assets/images/firebase_logo.png',
                         height: 160,
                       ),
                     ),
@@ -56,22 +60,55 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
               ),
-              FutureBuilder(
-                future: Authentication.initializeFirebase(context: context),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(
-                        'Error initializing Firebase: ${snapshot.error}');
-                  } else if (snapshot.connectionState == ConnectionState.done) {
-                    return const GoogleSignInButton();
-                  }
-                  return const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      CustomColors.firebaseOrange,
+              GoogleSignInButton(onPressed: () async {
+                final Authentication authentication =
+                    locator.get<Authentication>();
+
+                User? user =
+                    await authentication.signInWithGoogle(isWeb: kIsWeb);
+
+                if (user != null) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(
+                        user: user,
+                      ),
                     ),
                   );
-                },
-              ),
+                }
+              })
+              // FutureBuilder(
+              //   future: Authentication.initializeFirebase(context: context),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.hasError) {
+              //       return Text(
+              //           'Error initializing Firebase: ${snapshot.error}');
+              //     } else if (snapshot.connectionState == ConnectionState.done) {
+              //       return GoogleSignInButton(onPressed: () async {
+              //         final Authentication authentication =
+              //             locator.get<Authentication>();
+
+              //         User? user =
+              //             await authentication.signInWithGoogle(isWeb: kIsWeb);
+
+              //         if (user != null) {
+              //           Navigator.of(context).pushReplacement(
+              //             MaterialPageRoute(
+              //               builder: (context) => HomeScreen(
+              //                 user: user,
+              //               ),
+              //             ),
+              //           );
+              //         }
+              //       });
+              //     }
+              //     return const CircularProgressIndicator(
+              //       valueColor: AlwaysStoppedAnimation<Color>(
+              //         CustomColors.firebaseOrange,
+              //       ),
+              //     );
+              //   },
+              // ),
             ],
           ),
         ),

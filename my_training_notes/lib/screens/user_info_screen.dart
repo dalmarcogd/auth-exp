@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:my_training_notes/authentication.dart';
-import 'package:my_training_notes/custom_colors.dart';
+import 'package:my_training_notes/constants/custom_colors.dart';
+import 'package:my_training_notes/injection.dart';
 import 'package:my_training_notes/screens/sign_in_screen.dart';
+import 'package:my_training_notes/services/authentication/iauthentication.dart';
 import 'package:my_training_notes/widgets/app_bar_title.dart';
 
 class UserInfoScreen extends StatefulWidget {
@@ -143,7 +145,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         setState(() {
                           _isSigningOut = true;
                         });
-                        await Authentication.signOut(context: context);
+                        await locator
+                            .get<Authentication>()
+                            .signOut(isWeb: kIsWeb);
                         setState(() {
                           _isSigningOut = false;
                         });

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_training_notes/custom_colors.dart';
+import 'package:my_training_notes/constants/custom_colors.dart';
 
 class AppBarTitle extends StatelessWidget {
   const AppBarTitle({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class AppBarTitle extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
-          'assets/firebase_logo.png',
+          'assets/images/firebase_logo.png',
           height: 20,
         ),
         const SizedBox(width: 8),
