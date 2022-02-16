@@ -7,20 +7,33 @@ part 'user.g.dart';
 class User extends Equatable {
   final String id;
   final String firebaseUserUid;
+  final String? email;
+  final String? displayName;
+  final String? photoURL;
   final DateTime lastSignIn;
 
   const User({
     required this.id,
     required this.firebaseUserUid,
+    required this.email,
+    required this.displayName,
+    required this.photoURL,
     required this.lastSignIn,
   });
 
   User updateLastSignIn(DateTime d) {
-    return User(id: id, firebaseUserUid: firebaseUserUid, lastSignIn: d);
+    return User(
+        id: id,
+        firebaseUserUid: firebaseUserUid,
+        email: email,
+        displayName: displayName,
+        photoURL: photoURL,
+        lastSignIn: d);
   }
 
   @override
-  List<Object?> get props => [id, firebaseUserUid, lastSignIn];
+  List<Object?> get props =>
+      [id, firebaseUserUid, email, displayName, photoURL, lastSignIn];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

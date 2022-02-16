@@ -72,11 +72,77 @@ class AuthenticationImpl implements Authentication {
     }
 
     String? firebaseUserUid = firebaseUser?.uid;
+    String? firebaseUserEmail = firebaseUser?.email;
+    String? firebaseUserDisplayName = firebaseUser?.displayName;
+    String? firebaseUserPhotoURL = firebaseUser?.photoURL;
     User? user;
     try {
       user = await users.getByFirebaseUserUid(firebaseUserUid!);
     } on UserNotFoundByFirebaseUserUidExeception {
-      user = await users.create(firebaseUserUid!, DateTime.now());
+      user = await users.create(firebaseUserUid!, firebaseUserEmail!,
+          firebaseUserDisplayName!, firebaseUserPhotoURL!, DateTime.now());
+    }
+
+    user = user?.updateLastSignIn(DateTime.now());
+    user = await users.update(user!);
+
+    return user;
+  }
+
+  @override
+  Future<User?> signInWithGoogleSilently({required bool isWeb}) async {
+    fb.User? firebaseUser;
+
+    if (isWeb) {
+      fb.GoogleAuthProvider authProvider = fb.GoogleAuthProvider();
+
+      final fb.UserCredential userCredential =
+          await firebaseService.firebaseAuth.signInWithPopup(authProvider);
+
+      firebaseUser = userCredential.user;
+    } else {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signInSilently();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final fb.AuthCredential credential = fb.GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        try {
+          final fb.UserCredential userCredential = await firebaseService
+              .firebaseAuth
+              .signInWithCredential(credential);
+
+          firebaseUser = userCredential.user;
+        } on fb.FirebaseAuthException catch (e) {
+          if (e.code == 'account-exists-with-different-credential') {
+            throw AccountExistsWithDifferentCredentialException();
+          } else if (e.code == 'invalid-credential') {
+            throw InvalidCredentialException();
+          }
+        } catch (e) {
+          throw InternalException();
+        }
+      }
+    }
+
+    String? firebaseUserUid = firebaseUser?.uid;
+    String? firebaseUserEmail = firebaseUser?.email;
+    String? firebaseUserDisplayName = firebaseUser?.displayName;
+    String? firebaseUserPhotoURL = firebaseUser?.photoURL;
+    User? user;
+    try {
+      user = await users.getByFirebaseUserUid(firebaseUserUid!);
+    } on UserNotFoundByFirebaseUserUidExeception {
+      user = await users.create(firebaseUserUid!, firebaseUserEmail!,
+          firebaseUserDisplayName!, firebaseUserPhotoURL!, DateTime.now());
     }
 
     user = user?.updateLastSignIn(DateTime.now());

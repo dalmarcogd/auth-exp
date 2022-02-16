@@ -22,12 +22,17 @@ class UsersImpl implements Users {
   }
 
   @override
-  Future<User?> create(String firebaseUserUid, DateTime lastSignIn) async {
+  Future<User?> create(String firebaseUserUid, String email, String displayName,
+      String photoURL, DateTime lastSignIn) async {
     var uuid = const Uuid();
     User user = User(
-        id: uuid.v4(),
-        firebaseUserUid: firebaseUserUid,
-        lastSignIn: lastSignIn);
+      id: uuid.v4(),
+      firebaseUserUid: firebaseUserUid,
+      email: email,
+      displayName: displayName,
+      photoURL: photoURL,
+      lastSignIn: lastSignIn,
+    );
     await collection.doc(user.id).set(user.toJson());
     return user;
   }
